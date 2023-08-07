@@ -101,4 +101,5 @@ for param, doc in refined_zel_docs_v18.items():
 print("\nDocumentation for Config.sh parameters:")
 for param, doc in refined_config_docs_v18.items():
     print(f"{param}: {doc}\n")
+
 """
