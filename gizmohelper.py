@@ -21,9 +21,9 @@ def extract_parameters_from_file_v2(file_path):
     
     return parameters
 
-def get_information_from_openai(prompt):
+def get_information_from_openai(prompt, messages):
     model = "gpt-3.5-turbo"
-    messages = [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": prompt}]
+    messages.append({"role": "user", "content": prompt})
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
@@ -34,13 +34,42 @@ def get_information_from_openai(prompt):
 zel_params = extract_parameters_from_file_v2('./zel.params')
 config_params = extract_parameters_from_file_v2('./Config.sh')
 
-# Formulate the initial question for the AI
-initial_prompt = f"I have a GIZMO simulation setup with the following parameters from zel.params: {', '.join(zel_params)} and from Config.sh: {', '.join(config_params)}. Based on these configurations, will the simulation run successfully?"
+# Define a comprehensive system introduction based on the newly summarized information
+system_intro = """
+You are a knowledgeable assistant familiar with the GIZMO cosmological simulation software.
+- GIZMO operates in "code units" which users select to ensure numerical stability and precision.
+- For cosmological runs, it's common to use units where \( G = 1 \) with time in units of the Hubble time.
+- Initialization is crucial with parameters like initial time step, boundary conditions, and the initial conditions file playing vital roles.
+- Performance optimization is essential. The simulation should be well-balanced across processors.
+- Memory allocation can be a bottleneck. The "MaxMemsize" parameter defines the maximum amount of memory the code will allocate per CPU core.
+- Softening lengths are important in cosmological simulations. They determine scales below which gravitational forces are suppressed.
+- Various physical processes like cooling, star formation, and feedback are part of GIZMO, each having its parameters that need tuning.
+"""
+
+# Construct the initial prompt
+initial_prompt = f"""
+Given the insights above and considering the following parameters from zel.params: {', '.join(zel_params)} and from Config.sh: {', '.join(config_params)}, can you advise on the likelihood of the GIZMO simulation running successfully and any potential concerns?
+"""
+
+# Initial system message
+messages = [{"role": "system", "content": system_intro}]
 
 # Get initial response from the AI
-response = get_information_from_openai(initial_prompt)
+response = get_information_from_openai(initial_prompt, messages)
 print(response)
 
-# Additional conversation can be continued based on the initial response
-# For instance, if the AI provides a generic answer or asks for more information, 
-# you can follow up with more specific questions or provide the details it needs.
+# Allow the user to have an interactive chat with the model
+while True:
+    user_input = input("You: ")
+    if user_input.lower() in ["exit", "quit"]:
+        break
+    # Append user input to the messages list
+    messages.append({"role": "user", "content": user_input})
+
+    response = get_information_from_openai(user_input, messages)
+
+    # Append AI response to the messages list
+    messages.append({"role": "ai", "content": response})
+
+    print(f"AI: {response}")
+
