@@ -2,6 +2,12 @@ import openai
 import re
 from context_extraction import best_extract_relevant_docs_v18
 
+# Change the filepaths here
+params_filename = './zel.params'
+config_filename = './Config.sh'
+gizmo_documentation_filename = './GIZMO_Documentation.txt'
+
+
 # OpenAI setup
 def get_api_key(file_path):
     with open(file_path, 'r') as file:
@@ -24,16 +30,16 @@ def extract_parameters_from_file(file_path):
     return parameters
 
 # Extract the parameters
-zel_params = extract_parameters_from_file("zel.params")
-config_params = extract_parameters_from_file("Config.sh")
+zel_params = extract_parameters_from_file(params_filename)
+config_params = extract_parameters_from_file(config_filename)
 
 # Extract documentation for the parameters
-docs_zel_params = best_extract_relevant_docs_v18(zel_params, "GIZMO_Documentation.txt")
-print('zel.params:')
-print(zel_params)
-docs_config_params = best_extract_relevant_docs_v18(config_params, "GIZMO_Documentation.txt")
-print('Config.sh:')
-print(config_params)
+docs_zel_params = best_extract_relevant_docs_v18(zel_params, gizmo_documentation_filename)
+#print('zel.params:')
+#print(zel_params)
+docs_config_params = best_extract_relevant_docs_v18(config_params, gizmo_documentation_filename)
+#print('Config.sh:')
+#print(config_params)
 
 # Formulate the documentation snippets for the initial prompt
 doc_snippets = []
