@@ -1,6 +1,6 @@
-# GIZMO Chat Helper
+# GIZMO Chat
 
-GIZMO Chat Helper is a tool designed to assist users in setting up their GIZMO simulations. Using OpenAI's powerful GPT-3 model, it provides insights into configuration parameters, predicts the success of a simulation based on the provided settings, and assists in debugging by analyzing error messages.
+GIZMO Chat is a tool designed to assist users in setting up their GIZMO simulations. Using OpenAI's GPT-3.5-turbo model (ChatGPT), it provides insights into configuration parameters, predicts the success of a simulation based on the provided settings, and assists in debugging by analyzing error messages.
 
 ## Setup and Installation
 
